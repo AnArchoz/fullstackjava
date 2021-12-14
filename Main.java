@@ -11,7 +11,7 @@ public class Main {
     }
 
     public void start() {
-        System.out.println("Please enter two numbers and an operation, or type 'quit' to end the program.");
+        System.out.println("Please enter two numbers and an operation with spaces in between, or type 'quit' to end the program.");
         String input = user.nextLine().toLowerCase();
 
         // End program if input = quit
@@ -19,12 +19,10 @@ public class Main {
             System.out.println("Good bye!");
             System.exit(0);
 
-            // TRYING TO VALIDATE WITH REGEX BUT NOT GOING WELL HELP
-            //            if (!input.matches("^[\\s0-9*/+-]$")) {
-            //              System.out.println("Enter only add numbers and operations");
-            //            start();
-            //    }
-
+        // FINALLY WORKING REGEX: Checks that string only contains numbers or the chosen operators
+        } else if (!input.matches("^[\\s0-9*/+-]+\\d$")) {
+            System.out.println("Enter only numbers and operations");
+            start();
         } else {
             // Check if string contains numbers and operators
             String[] splitstring = input.split("\\s+");
@@ -32,8 +30,9 @@ public class Main {
             int number1 = 0, number2 = 0;
             String operator;
             // Check if string contains exactly two numbers and operators
+            // TODO: CHANGE FOR ADDITION AND SUBTRACTION
             if (splitstring.length != 3) {
-                System.out.println("please enter correctly!");
+                System.out.println("Please enter only two numbers and an operator");
                 start();
             }
 
@@ -45,6 +44,7 @@ public class Main {
                 System.out.println("You did not enter correct numbers");
                 start();
             }
+
             for (String operation : operations) {
                 // Check if operator exists
                 if (splitstring[1].equals(operation)) {
@@ -52,12 +52,14 @@ public class Main {
                     break;
                 }
             }
+
             if (!found) {
                 System.out.println("Please use only /*'- operators");
                 start();
             }
 
             // Assign numbers and operators properly and send to calculation
+            // TODO: Maybe probably move to calculate method
             operator = splitstring[1];
             double result = calculate(operator, number1, number2);
             System.out.println("The result is: " + result);
@@ -68,8 +70,11 @@ public class Main {
     }
 
     /**
-     * CALCULATES THE NUMBERS AND RETURNS A DOUBLE
+     *
+     * CALCULATES THE int NUMBERS AND RETURNS A DOUBLE for numbers with decimal points
      */
+
+
     public double calculate(String operator, int number1, int number2) {
 
         switch (operator) {
