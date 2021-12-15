@@ -33,7 +33,7 @@ public class Main {
             boolean operatorsValid = false;
             boolean pemdas = false;
             // TODO: Build dynamicArray class for holding operators
-            DynArr divMultLocations = new DynArr(new int[0]);
+            DynArr divMultLocations = new DynArr(new int[1]);
 
             // Check if string contains exactly two numbers and operators
             // TODO: CHANGE FOR PEMDAS
@@ -52,15 +52,15 @@ public class Main {
                 start();
             }
 
-            for (int i = 0, j = 0; i < operations.length; i++) {
+            for (int i = 0; i < operations.length; i++) {
                 String operation = operations[i];
                 // Check if operator exists (as odd indexes or even elements)
                 operatorsValid = i % 2 != 0 | splitstring[i].equals(operation);
-                if (operation.equals("/") || operation.equals("*")) {
-                    j++;
+                if (operation.equals("/") | operation.equals("*")) {
                     pemdas = true;
                     // TODO: Implement dynamic array
-                    divMultLocations.setElement(i);
+                    // Add index as location in the array for the Calculate method to know where to look
+                    divMultLocations.append(i);
                 }
             }
 
@@ -70,7 +70,7 @@ public class Main {
                 start();
             }
 
-            double result = calculate(splitstring, pemdas);
+            double result = calculate(splitstring, divMultLocations, pemdas);
             System.out.println("The result is: " + result);
 
             // Lets user calculate another number
@@ -83,25 +83,25 @@ public class Main {
      */
 
     // TODO: REBUILD COMPLETELY
-    public double calculate(String[] statement, boolean pemdas) {
-//        double result = 0;
-//        switch (operator) {
-//            case "*":
-//                return number1 * number2;
-//            case "+":
-//                return number1 + number2;
-//            case "-":
-//                return number1 - number2;
-//            case "/":
-//                if (number1 == 0 | number2 == 0) {
-//                    System.out.println("can't divide with 0!!!");
-//                    return -1;
-//                } else {
-//                    return (double) number1 / number2;
-//                }
-//
-//        }
-//
-//        return -1;
-//    }
+    public double calculate(String[] statement, DynArr locations, boolean pemdas) {
+        double result = 0;
+        switch (operator) {
+            case "*":
+                return number1 * number2;
+            case "+":
+                return number1 + number2;
+            case "-":
+                return number1 - number2;
+            case "/":
+                if (number1 == 0 | number2 == 0) {
+                    System.out.println("can't divide with 0!!!");
+                    return -1;
+                } else {
+                    return (double) number1 / number2;
+                }
+
+        }
+
+        return -1;
+    }
 }
