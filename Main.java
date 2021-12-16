@@ -32,43 +32,38 @@ public class Main {
             String[] splitstring = input.split("\\s+");
             boolean operatorsValid = false;
             boolean pemdas = false;
-            // TODO: Build dynamicArray class for holding operators
-            DynArr divMultLocations = new DynArr(new int[1]);
-
-            // Check if string contains exactly two numbers and operators
-            // TODO: CHANGE FOR PEMDAS
-            // if (splitstring.length != 3) {
-            //  System.out.println("Please enter only two numbers and an operator");
-            // start();
-            //}
+            DynArr divMultLocations = new DynArr();
 
             try {
-                // Check if numbers are numbers, (as even indexes or odd elements)
+                // Check if numbers are numbers, (as even indexes, or odd elements)
                 for (int i = 0; i < splitstring.length; i += 2) {
                     Integer.parseInt(splitstring[i]);
                 }
             } catch (NumberFormatException e) {
-                System.out.println("You did not enter correct numbers");
+                System.out.println("You did not enter numbers correctly");
                 start();
             }
 
-            for (int i = 0; i < operations.length; i++) {
-                String operation = operations[i];
-                // Check if operator exists (as odd indexes or even elements)
-                operatorsValid = i % 2 != 0 | splitstring[i].equals(operation);
-                if (operation.equals("/") | operation.equals("*")) {
-                    pemdas = true;
-                    // TODO: Implement dynamic array
-                    // Add index as location in the array for the Calculate method to know where to look
-                    divMultLocations.append(i);
+            // TODO: REVERT AND REBUILD, WORKS FOR ONLY 2 NUMBERS BUT NOW **COMPLETELY** WRONG LOL,
+            for (String operator : operations) {
+                for (int j = 1; j < splitstring.length; j += 2) {
+                    // Check if operator exists (as odd indexes or even elements)
+                    operatorsValid = splitstring[j].equals(operator);
+                    if (operator.equals("/") | operator.equals("*")) {
+                        pemdas = true;
+                        // Add index as location in the array to dynamic array
+                        // for the Calculate method to know where to look
+                        divMultLocations.append(j);
+                    }
+
+                    // If operators are incorrect, restart
+                    if (!operatorsValid) {
+                        System.out.println("Please use only /*'- operators, one per operation");
+                        start();
+                    }
                 }
             }
 
-            // If operators are incorrect, restart
-            if (!operatorsValid) {
-                System.out.println("Please use only /*'- operators, one per operation");
-                start();
-            }
 
             double result = calculate(splitstring, divMultLocations, pemdas);
             System.out.println("The result is: " + result);
@@ -80,28 +75,48 @@ public class Main {
 
     /**
      * CALCULATES THE int NUMBERS AND RETURNS A double FOR NUMBERS WITH DECIMAL POINTS
+     * Parses numbers from the string statement and applies the correct calculation based
+     * on if PEMDAS is relevant, and if so where in the string statement the divider or multiplier is located
      */
 
-    // TODO: REBUILD COMPLETELY
     public double calculate(String[] statement, DynArr locations, boolean pemdas) {
-        double result = 0;
-        switch (operator) {
-            case "*":
-                return number1 * number2;
-            case "+":
-                return number1 + number2;
-            case "-":
-                return number1 - number2;
-            case "/":
-                if (number1 == 0 | number2 == 0) {
-                    System.out.println("can't divide with 0!!!");
-                    return -1;
-                } else {
-                    return (double) number1 / number2;
-                }
+        double result = 0, firstNum, secondNum;
+        String operator;
 
+        // Iterate through the statement only on operators, which are located in odd indexes.
+        for (int i = 1; i < statement.length; i += 2) {
+            operator = statement[i];
+
+            // If there are dividers or multipliers, these must be calculated first
+            if (pemdas) {
+                for (int j = 0; j < locations.getSize(); j++) {
+                    int loc = locations.getElement(j);
+                    // Numbers to be calculated that are located in front of and behind the operator,
+                    // and then added to the result
+                    firstNum = Integer.parseInt(statement[loc - 1]);
+                    secondNum = Integer.parseInt(statement[loc + 1]);
+
+                    if (operator.equals("/")) {
+                        result += (firstNum / secondNum);
+                    } else if (operator.equals("*")) {
+                        result += (firstNum * secondNum);
+
+                    }
+                }
+            }
+
+            // Assign numbers to be calculated, located in front of and behind the operator.
+            firstNum = Integer.parseInt(statement[i - 1]);
+            secondNum = Integer.parseInt(statement[i + 1]);
+
+            switch (operator) {
+                case "+":
+                    result += firstNum + secondNum;
+                case "-":
+                    result -= firstNum - secondNum;
+            }
         }
 
-        return -1;
+        return result;
     }
 }

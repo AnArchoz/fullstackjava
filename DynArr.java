@@ -1,40 +1,57 @@
 public class DynArr {
-    private int[] values = new int[0];
-    private int arraySize;
+    private int[] values;
+    private int size;
     private int lastElement;
 
     // Constructor for creating a dynamic array with the contents of a normal array
     // First checks the size of the original array, and accordingly creates a larger dynamic array.
-    DynArr(int[] operators) {
-        int arrSize = operators.length;
+    DynArr(int[] elements) {
+        this.values = new int[elements.length + 1];
+        this.size = this.values.length;
+    }
 
-        while (this.values.length <= operators.length) {
-            grow();
-        }
-
+    // Default constructor for when no values exist
+    DynArr() {
+        this.values = new int[1];
+        this.size = this.values.length;
     }
 
     private void grow() {
-        int[] tempArray = new int[values.length + values.length / 2];
+        int[] tempArray = new int[this.values.length + this.values.length / 2];
 
-        for (int i = 0; i < values.length; i++) {
-            tempArray[i] = values[i];
+        for (int i = 0; i < this.values.length; i++) {
+            tempArray[i] = this.values[i];
         }
 
-        values = tempArray;
-
+        this.values = tempArray;
+        this.size = this.values.length;
+        lastElement = this.size;
     }
 
-    private int getSize() {
-        return values.length;
+    public int getSize() {
+        return this.size;
     }
 
-    private void append(int value) {
+    public void append(int value) {
+        if (values.length == lastElement) {
+            grow();
+        }
 
+        this.values[lastElement] = value;
     }
 
-    private void append(int[] values) {
+    public void append(int[] elements) {
 
+        while (elements.length >= this.size) {
+            grow();
+        }
+
+        for (int element : elements) {
+            this.values[lastElement++] = element;
+        }
     }
 
+    public int getElement(int i) {
+        return this.values[i];
+    }
 }
