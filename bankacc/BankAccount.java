@@ -57,7 +57,7 @@ public class BankAccount {
 	}
 
 	public boolean withdraw(int amount) {
-		if (amount > balance) {
+		if (amount > balance || amount == 0) {
 			return false;
 		}
 
@@ -66,7 +66,9 @@ public class BankAccount {
 	}
 
 	public void deposit(int amount) {
-		balance += amount;
+		if (amount > 0) {
+			balance += amount;
+		}
 	}
 
 	@Override
