@@ -57,7 +57,7 @@ public class BankAccount {
 	}
 
 	public boolean withdraw(int amount) {
-		if (amount > balance || amount == 0) {
+		if (amount > balance || amount <= 0) {
 			return false;
 		}
 
